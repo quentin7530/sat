@@ -17,7 +17,7 @@ public class VierGewinnt {
         static String SPIELER; // der aktuelle Spielername → für die Gewinner Ausgabe
         private final PrintStream output;
         private final PrintStream error;
-        private java.util.Scanner scanner;
+        private final java.util.Scanner scanner;
         public VierGewinnt(InputStream in, PrintStream out, PrintStream err) {
                 this.scanner = new Scanner(in);
                 this.output = out;
@@ -63,10 +63,9 @@ public class VierGewinnt {
                 }
                 if(winner == 0){
                         showSpielfeld(spielfeld);
-                        //System.err.println("Unentschieden!");
-                        error.println("Unentschieden!");
+                        output.println("Unentschieden!");
                 }
-
+                scanner.close();
         }
 
         /**
@@ -295,5 +294,9 @@ public class VierGewinnt {
                 }
                 Geruest.append(row_end).append("\n");
                 output.println(Geruest);
+        }
+
+        public static void main(String[] args) {
+                new VierGewinnt(System.in, System.out, System.out).play();
         }
 }
