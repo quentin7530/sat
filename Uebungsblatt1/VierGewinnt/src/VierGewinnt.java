@@ -1,5 +1,6 @@
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Scanner;
 
 /**
  * @author Torben Brodt
@@ -13,15 +14,17 @@ import java.io.PrintStream;
  */
 public class VierGewinnt {
 
-        static String SPIELER; // der aktuelle Spielername -> f�r die Gewinner Ausgabe
-
-        public VierGewinnt(InputStream in, PrintStream printStream, PrintStream printStream1) {
+        static String SPIELER; // der aktuelle Spielername → für die Gewinner Ausgabe
+        private final PrintStream output;
+        private final PrintStream error;
+        private java.util.Scanner scanner;
+        public VierGewinnt(InputStream in, PrintStream out, PrintStream err) {
+                this.scanner = new Scanner(in);
+                this.output = out;
+                this.error = err;
         }
 
-        /**
-         * @param args -> unbenutzt
-         */
-        public static void main(String[] args) {
+        public void play(){
                 int columns, rows, zaehler = 0, eingabe;
                 String player1, player2;
                 char zeichen;
@@ -44,70 +47,72 @@ public class VierGewinnt {
                 } while (rows < 4); // Frage erneut, wenn die H�he zu klein gew�hlt wurde
 
                 spielfeld = new char[rows][columns];
-
-                while (zaehler < columns * rows) {
+                char winner = 0;
+                while (zaehler < columns * rows && winner == 0) {
                         zeichen = (zaehler % 2 == 0) ? 'o' : '+';
                         SPIELER = (zaehler % 2 == 0) ? player1 : player2;
                         showSpielfeld(spielfeld);
                         eingabe = eingabeInt("\n" + SPIELER + "(" + zeichen
                                         + ") ist am Zug. Bitte gib die Spalte ein: ");
                         if (eingabe > columns || eingabe < 1)
-                                System.err.println("Feld existriert nicht.. Bitte versuch es nochmal!");
+                                error.println("Feld existriert nicht.. Bitte versuch es nochmal!");
                         else {
                                 zaehler++; // naechster Bitte
-                                setzeFeld(spielfeld, eingabe, zeichen);
+                                winner = setzeFeld(spielfeld, eingabe, zeichen);
                         }
                 }
-                showSpielfeld(spielfeld);
-                System.err.println("Unentschieden!");
+                if(winner == 0){
+                        showSpielfeld(spielfeld);
+                        //System.err.println("Unentschieden!");
+                        error.println("Unentschieden!");
+                }
+
         }
 
         /**
-         * @param text -> Bildschirmausgabe
-         * @return -> Tastatureingabe
+         * @param text → Bildschirmausgabe
+         * @return → Tastatureingabe
          */
-        static int eingabeInt(String text) {
-                System.out.print(text);
-                java.util.Scanner input = new java.util.Scanner(System.in);
-                return input.nextInt();
+        int eingabeInt(String text) {
+                output.print(text);
+                return scanner.nextInt();
         }
 
         /**
-         * @param text -> Bildschirmausgabe
-         * @return -> Tastatureingabe
+         * @param text → Bildschirmausgabe
+         * @return → Tastatureingabe
          */
-        static String eingabeString(String text) {
-                System.out.print(text);
-                java.util.Scanner input = new java.util.Scanner(System.in);
-                return input.next();
+        String eingabeString(String text) {
+                output.print(text);
+                return scanner.next();
         }
 
         /**
          * Spalte wird �bergeben und das Feld wird gesetzt
          * 
-         * @param spielfeld -> Das Spielfeld mit allen ben�tigten Daten
-         * @param column    -> eingegebene Spalte
-         * @param zeichen   -> jeder Spieler hat ein Zeichen (*) oder (+)
+         * @param spielfeld → Das Spielfeld mit allen ben�tigten Daten
+         * @param column    → eingegebene Spalte
+         * @param zeichen   → jeder Spieler hat ein Zeichen (*) oder (+)
          */
-        static void setzeFeld(char[][] spielfeld, int column, char zeichen) {
+        char setzeFeld(char[][] spielfeld, int column, char zeichen) {
                 column--; // Weil der gemeine Mensch denkt, der Zahlenbereich w�rde sich von 1 bis 4
                           // erstrecken
                 int pos2check;
                 if (spielfeld[0][column] != '\0') {
-                        System.err.println("Die Reihe ist voll.. Pech!");
-                        return;
+                        error.println("Die Reihe ist voll.. Pech!");
+                        return 0;
                 }
                 for (int i = 0; i < spielfeld.length; i++) { // Iteriere durch die Zeilen
                         if (i + 1 == spielfeld.length) {
-                                // Nach der letzten Zeile kommt nichts mehr..
+                                // Nach der letzten Zeile kommt nichts mehr...
                                 // also darf in das aktuelle K�stchen geschrieben werden, obwohl im
                                 // n�chsten nichts steht
                                 pos2check = i;
                                 if (spielfeld[pos2check][column] == '\0') {
                                         spielfeld[i][column] = zeichen;
                                         if (IsGameOver(spielfeld, i, column, zeichen)) {// Hat jmd gewonnen?
-                                                System.out.println("Spieler mit " + zeichen + "hat gewonnen");
-                                                System.exit(0);
+                                                output.println("Spieler mit " + zeichen + "hat gewonnen");
+                                                return zeichen;
                                         }
                                         break;
                                 }
@@ -118,22 +123,23 @@ public class VierGewinnt {
                                 if (spielfeld[pos2check][column] != '\0') {
                                         spielfeld[i][column] = zeichen;
                                         if (IsGameOver(spielfeld, i, column, zeichen)) {// Hat jmd gewonnen?
-                                                System.out.println("Spieler mit " + zeichen + "hat gewonnen");
-                                                System.exit(0);
+                                                output.println("Spieler mit " + zeichen + "hat gewonnen");
+                                                return zeichen;
                                         }
                                         break;
                                 }
                         }
                 }
+        return 0;
         }
 
         /**
          * Sammelstelle f�r die Funktionen, die �berpr�fen ob jmd. gewonnen hat
          * 
-         * @param spielfeld -> Das Spielfeld mit allen ben�tigten Daten
-         * @param column    -> die Spalte an der das Zeichen gesetzt wurde
-         * @param row       -> die Reihe an der das Zeichen gesetzt wurde
-         * @param zeichen   -> das Zeichen
+         * @param spielfeld → Das Spielfeld mit allen ben�tigten Daten
+         * @param column    → die Spalte an der das Zeichen gesetzt wurde
+         * @param row       → die Reihe an der das Zeichen gesetzt wurde
+         * @param zeichen   → das Zeichen
          */
         static boolean IsGameOver(char[][] spielfeld, int column, int row, char zeichen) {
                 boolean b1 = GameIsOver_row(spielfeld, column, row, zeichen);
@@ -248,20 +254,20 @@ public class VierGewinnt {
         /**
          * Bricht das Programm ab und liefert den Gewinner
          * 
-         * @param spielfeld -> Das Spielfeld mit allen ben�tigten Daten
+         * @param spielfeld → Das Spielfeld mit allen ben�tigten Daten
          */
-        static void spielFertig(char[][] spielfeld) {
+        void spielFertig(char[][] spielfeld) {
                 showSpielfeld(spielfeld);
-                System.out.println(SPIELER + " hat gewonnen\n");
-                System.exit(1);
+                output.println(SPIELER + " hat gewonnen\n");
+                return;
         }
 
         /**
          * Zeigt das komplette Spielfeld auf dem Bildschirm
          * 
-         * @param spielfeld -> Das Spielfeld mit allen ben�tigten Daten
+         * @param spielfeld → Das Spielfeld mit allen ben�tigten Daten
          */
-        static void showSpielfeld(char[][] spielfeld) {
+        void showSpielfeld(char[][] spielfeld) {
                 StringBuffer Geruest = new StringBuffer();
                 StringBuffer row_start = new StringBuffer(" "); // erste Zeile 1 2 3 4
                 StringBuffer row_divide = new StringBuffer("|"); // Trennzeile |-----|
@@ -277,8 +283,8 @@ public class VierGewinnt {
                         row_divide.append((i == spielfeld[0].length) ? "-|" : "--");
                         row_end.append("--");
                 }
-                System.out.println(row_start);
-                System.out.println(row_divide);
+                output.println(row_start);
+                output.println(row_divide);
 
                 for (char[] arrZeile : spielfeld) { // iteriere durch alle Zeilen
                         for (char arrSpalte : arrZeile) { // iteriere durch alle Spalten
@@ -288,10 +294,6 @@ public class VierGewinnt {
                         Geruest.append("|\n");
                 }
                 Geruest.append(row_end).append("\n");
-                System.out.println(Geruest);
-        }
-
-        public void play() {
-
+                output.println(Geruest);
         }
 }
