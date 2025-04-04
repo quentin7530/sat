@@ -1,3 +1,5 @@
+import java.io.InputStream;
+import java.io.PrintStream;
 
 /**
  * @author Torben Brodt
@@ -12,6 +14,9 @@
 public class VierGewinnt {
 
         static String SPIELER; // der aktuelle Spielername -> f�r die Gewinner Ausgabe
+
+        public VierGewinnt(InputStream in, PrintStream printStream, PrintStream printStream1) {
+        }
 
         /**
          * @param args -> unbenutzt
@@ -284,5 +289,9 @@ public class VierGewinnt {
                 }
                 Geruest.append(row_end).append("\n");
                 System.out.println(Geruest);
+        }
+
+        public void play() {
+
         }
 }
