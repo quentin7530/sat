@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class Utilities {
 
     // Konstruktor
@@ -11,8 +13,84 @@ public class Utilities {
     }
 
     // B
-    public static String prepareStringForUrl(String s) {
-        return null;
+    public static String prepareStringForUrl(String s) throws Exception {
+        HashMap<Character, String> charatersToReplace = new HashMap<Character, String>();
+        charatersToReplace.put('?', "qm");
+        charatersToReplace.put('&', "amp");
+        charatersToReplace.put('#', "hash");
+        charatersToReplace.put(' ', "-");
+
+        s = s.toLowerCase();
+        StringBuilder builder = new StringBuilder();
+        for (char c : s.toCharArray()) {
+            if (isAllowedCharacter(c)) {
+                builder.append(c);
+            } else {
+                if (charatersToReplace.containsKey(c)) {
+                    builder.append(charatersToReplace.get(c));
+                }
+            }
+        }
+
+        int i = 0;
+        while (i < builder.length() - 1) {
+            if (builder.charAt(i) == '-' && builder.charAt(i + 1) == '-') {
+                builder.deleteCharAt(i);
+            } else {
+                i++;
+            }
+        }
+
+        if (builder.length() > 0 && builder.charAt(0) == ('-')) {
+            builder.deleteCharAt(0);
+        }
+
+        if (builder.length() > 0 && builder.charAt(builder.length() - 1) == ('-')) {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+
+        if (builder.length() <= 0)
+            throw new Exception();
+
+        return builder.toString();
     }
 
+    public static boolean isAllowedCharacter(char c) {
+        return Character.isLetterOrDigit(c) || c == '-';
+    }
+
+    public static void main(String[] args) {
+        try {
+            String inputString1 = " ()";
+            System.out.println("Input: " + inputString1);
+            System.out.println("Output: " + prepareStringForUrl(inputString1));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        try {
+            String inputString2 = "-()Test & Check #URL! ";
+            System.out.println("Input: " + inputString2);
+            System.out.println("Output: " + prepareStringForUrl(inputString2));
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        try {
+            String inputString3 = "Java? Rocks & -- Rolls--";
+            System.out.println("Input: " + inputString3);
+            System.out.println("Output: " + prepareStringForUrl(inputString3));
+
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        try {
+            String inputString4 = "Space  and  #Hash?";
+            System.out.println("Input: " + inputString4);
+            System.out.println("Output: " + prepareStringForUrl(inputString4));
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
 }
