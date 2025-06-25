@@ -12,30 +12,29 @@ public class UtilitiesTest{
             Pursued by the Empire’s sinister agents, Princess Leia races home aboard her starship, custodian of the stolen plans that can save her people and restore freedom to the galaxy.
             """;
     @Test
-    public void testEndeDesVorschausBeiTexteWeniger140zeichen(){
+    public void testEndeVorschauBeiTexteWeniger140zeichen(){
         assertTrue(Utilities.shortenText("Hallo").endsWith("o"));
     }
 
     @Test
-    public void testEndeDesVorschausBeiTexteMehr140zeichen(){
+    public void testEndeVorschauBeiTexteMehr140zeichen(){
         assertTrue(Utilities.shortenText(StarWars).endsWith("..."));
     }
     @Test
     public void testVorschauBeiTextMehr140ZeichenNichtInDerMitteDesWortesAbgeschnitten(){
-        char zeichen140 = StarWars.charAt(140);
-        assertFalse(Utilities.shortenText("Hallo").endsWith("h"));
+        String zeichen140 = String.valueOf(StarWars.charAt(140));
+        assertFalse(Utilities.shortenText(StarWars).endsWith(zeichen140 + "..."));
     }
     @Test
     public void testVorschauBeiTextMehr140ZeichenEndetMitLetztenWort(){
-        char zeichen140 = StarWars.charAt(140);
-        assertFalse(Utilities.shortenText(StarWars).endsWith("the..."));
+        assertFalse(Utilities.shortenText(StarWars).endsWith("against..."));
     }
     @Test
     public void testVorschauKleinerGleich140Zeichen(){
         assertTrue(Utilities.shortenText(StarWars).length() <= 143);
     }
     @Test
-    public void testVorschauBeiNullText() throws Exception{
+    public void testVorschauBeiNullText(){
          assertThrows(Exception.class, () -> Utilities.shortenText(null)) ;
     }
 }
