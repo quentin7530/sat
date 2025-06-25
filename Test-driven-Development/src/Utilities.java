@@ -4,7 +4,7 @@ public class Utilities {
 
     // Konstruktor
     public Utilities() {
-        // Initialisierung falls nötig
+        //Initialisierung, falls nötig
     }
 
     // A
@@ -14,11 +14,11 @@ public class Utilities {
 
     // B
     public static String prepareStringForUrl(String s) {
-        HashMap<Character, String> charatersToReplace = new HashMap<Character, String>();
-        charatersToReplace.put('?', "qm");
-        charatersToReplace.put('&', "amp");
-        charatersToReplace.put('#', "hash");
-        charatersToReplace.put(' ', "-");
+        HashMap<Character, String> charactersToReplace = new HashMap<>();
+        charactersToReplace.put('?', "qm");
+        charactersToReplace.put('&', "amp");
+        charactersToReplace.put('#', "hash");
+        charactersToReplace.put(' ', "-");
 
         s = s.toLowerCase();
         StringBuilder builder = new StringBuilder();
@@ -26,8 +26,10 @@ public class Utilities {
             if (isAllowedCharacter(c)) {
                 builder.append(c);
             } else {
-                if (charatersToReplace.containsKey(c)) {
-                    builder.append(charatersToReplace.get(c));
+                if (charactersToReplace.containsKey(c)) {
+                    builder.append(charactersToReplace.get(c));
+                }else{
+                    builder.append('-');
                 }
             }
         }
@@ -41,11 +43,11 @@ public class Utilities {
             }
         }
 
-        if (builder.length() > 0 && builder.charAt(0) == ('-')) {
+        if (!builder.isEmpty() && builder.charAt(0) == ('-')) {
             builder.deleteCharAt(0);
         }
 
-        if (builder.length() > 0 && builder.charAt(builder.length() - 1) == ('-')) {
+        if (!builder.isEmpty() && builder.charAt(builder.length() - 1) == ('-')) {
             builder.deleteCharAt(builder.length() - 1);
         }
 
