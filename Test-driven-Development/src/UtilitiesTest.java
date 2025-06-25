@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 public class UtilitiesTest{
 
-    String StarWars = """
+    String starWars = """
             Episode Four – A New Hope
             It is a period of civil war.
             Rebel spaceships, striking from a hidden base, have won their first victory against the evil Galactic Empire.
@@ -18,23 +18,39 @@ public class UtilitiesTest{
 
     @Test
     public void testEndeVorschauBeiTexteMehr140zeichen(){
-        assertTrue(Utilities.shortenText(StarWars).endsWith("..."));
+        assertTrue(Utilities.shortenText(starWars).endsWith("..."));
     }
     @Test
     public void testVorschauBeiTextMehr140ZeichenNichtInDerMitteDesWortesAbgeschnitten(){
-        String zeichen140 = String.valueOf(StarWars.charAt(140));
-        assertFalse(Utilities.shortenText(StarWars).endsWith(zeichen140 + "..."));
+        String zeichen140 = String.valueOf(starWars.charAt(140));
+        assertFalse(Utilities.shortenText(starWars).endsWith(zeichen140 + "..."));
     }
     @Test
     public void testVorschauBeiTextMehr140ZeichenEndetMitLetztenWort(){
-        assertFalse(Utilities.shortenText(StarWars).endsWith("against..."));
+        assertTrue(Utilities.shortenText(starWars).endsWith("against..."));
     }
     @Test
     public void testVorschauKleinerGleich140Zeichen(){
-        assertTrue(Utilities.shortenText(StarWars).length() <= 143);
+        assertTrue(Utilities.shortenText(starWars).length() <= 143);
     }
     @Test
-    public void testVorschauBeiNullText(){
-         assertThrows(Exception.class, () -> Utilities.shortenText(null)) ;
+    public void testVorschauBeiNullTextException() {
+        assertThrows(Exception.class, () -> Utilities.shortenText(null));
+    }
+
+    @Test
+    public void testVorschauBeiTextMit140ZeichenOhneLeerzeichen() {
+        String starWarsOhneLeerzeichen = starWars.replaceAll(" ", "");
+        System.out.println(starWarsOhneLeerzeichen);
+        assertThrows(Exception.class, () -> Utilities.shortenText(starWarsOhneLeerzeichen));
+    }
+    @Test
+    public void testVorschauBeiKeinemText() {
+        assertEquals("", Utilities.shortenText(""));
+    }
+    @Test
+    public void testVorschauEndetNichtMitLeerzeichen() {
+        String beispiel = "Dies ist ein Beispieltext, der genau 136 Zeichen lang ist und dazu dient, deine Anforderungen zu erfüllen. Achte auf die Struktur des Textes.      FortsetzungText";
+        assertFalse(Utilities.shortenText(beispiel).endsWith(" ..."));
     }
 }

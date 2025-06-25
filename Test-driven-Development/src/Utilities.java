@@ -13,7 +13,7 @@ public class Utilities {
     }
 
     // B
-    public static String prepareStringForUrl(String s) throws Exception {
+    public static String prepareStringForUrl(String s) {
         HashMap<Character, String> charatersToReplace = new HashMap<Character, String>();
         charatersToReplace.put('?', "qm");
         charatersToReplace.put('&', "amp");
@@ -50,7 +50,7 @@ public class Utilities {
         }
 
         if (builder.length() <= 0)
-            throw new Exception();
+            return null;
 
         return builder.toString();
     }
