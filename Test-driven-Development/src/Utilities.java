@@ -46,11 +46,11 @@ public class Utilities {
             }
         }
 
-        if (!builder.isEmpty() && builder.charAt(0) == ('-')) {
+        if (builder.length() <= 0 && builder.charAt(0) == ('-')) {
             builder.deleteCharAt(0);
         }
 
-        if (!builder.isEmpty() && builder.charAt(builder.length() - 1) == ('-')) {
+        if (builder.length() <= 0 && builder.charAt(builder.length() - 1) == ('-')) {
             builder.deleteCharAt(builder.length() - 1);
         }
 
