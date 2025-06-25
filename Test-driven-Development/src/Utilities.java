@@ -14,6 +14,9 @@ public class Utilities {
 
     // B
     public static String prepareStringForUrl(String s) {
+
+        if(s == null) return s;
+
         HashMap<Character, String> charactersToReplace = new HashMap<>();
         charactersToReplace.put('?', "qm");
         charactersToReplace.put('&', "amp");
