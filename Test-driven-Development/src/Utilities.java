@@ -1,21 +1,39 @@
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Utilities {
 
     // Konstruktor
     public Utilities() {
-        //Initialisierung, falls nötig
+        // Initialisierung, falls nötig
     }
 
     // A
     public static String shortenText(String s) {
-        return null;
+        final int maxLength = 140;
+        final String continuation = "...";
+
+        Objects.requireNonNull(s, "String has to be non-null");
+
+        if (s.length() <= maxLength) {
+            return s;
+        }
+
+        s = s.substring(0, maxLength - continuation.length());
+        int indexOfLastSpace = s.lastIndexOf(" ");
+
+        if (indexOfLastSpace < 0) {
+            return s + continuation;
+        }
+
+        return s.substring(0, indexOfLastSpace) + continuation;
     }
 
     // B
     public static String prepareStringForUrl(String s) {
 
-        if(s == null) return s;
+        if (s == null)
+            return s;
 
         HashMap<Character, String> charactersToReplace = new HashMap<>();
         charactersToReplace.put('?', "qm");
@@ -31,7 +49,7 @@ public class Utilities {
             } else {
                 if (charactersToReplace.containsKey(c)) {
                     builder.append(charactersToReplace.get(c));
-                }else{
+                } else {
                     builder.append('-');
                 }
             }
