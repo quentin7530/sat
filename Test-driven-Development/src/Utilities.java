@@ -8,7 +8,7 @@ public class Utilities {
         // Initialisierung, falls nötig
     }
 
-    // A
+    // A implementiert von Simon Niedt de Matos und Nico Schreiber
     public static String shortenText(String s) {
         final int maxLength = 140;
         final String continuation = "...";
@@ -29,7 +29,7 @@ public class Utilities {
         return s.substring(0, indexOfLastSpace) + continuation;
     }
 
-    // B
+    // B implementiert von Aaron Haeßler und Quentin Robert
     public static String prepareStringForUrl(String s) {
 
         if (s == null)
