@@ -1,7 +1,11 @@
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+// import org.junit.jupiter.api.Test;
+// import static org.junit.jupiter.api.Assertions.*;
 
-public class UtilitiesTest {
+import org.junit.Test;
+
+import junit.framework.TestCase;
+
+public class UtilitiesTest extends TestCase {
 
     String starWars = """
             Episode Four – A New Hope
